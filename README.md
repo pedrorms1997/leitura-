@@ -18,6 +18,28 @@ Criamos esse projeto para aplicar funcionalidades aprendidas na disciplina Inter
 - Django
 - SQLite (banco de dados padrão)
 - HTML/CSS (via templates Django)
+- Google Books API
+- Gemini AI (API da Google para geração de texto)
+
+## 🔌 Integrações com APIs Externas
+
+### 📖 Google Books API
+Utilizamos a [API do Google Livros](https://developers.google.com/books) para buscar informações sobre livros, como:
+- Título
+- Autor
+- Capa
+- Descrição
+Esses dados são utilizados tanto para sugestões quanto para preencher os detalhes dos livros que o usuário pode adicionar à sua estante.
+
+### 🤖 Gemini API (Google Generative AI)
+A [API do Gemini](https://ai.google.dev) é usada para gerar recomendações inteligentes de leitura com base no histórico do usuário ou preferências informadas. Essa integração permite que o sistema ofereça sugestões personalizadas e conversacionais sobre livros.
+
+Para utilizar essas APIs, é necessário configurar suas respectivas chaves no arquivo `.env`, por exemplo:
+
+```env
+GOOGLE_BOOKS_API_KEY=sua-chave-do-google-books
+GEMINI_API_KEY=sua-chave-do-gemini
+```
 
 ## 🚀 Como rodar o projeto localmente
 
@@ -50,6 +72,8 @@ Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo básico:
 SECRET_KEY=sua-chave-secreta-aqui
 DEBUG=True
 ALLOWED_HOSTS=127.0.0.1,localhost
+GOOGLE_BOOKS_API_KEY=sua-chave-do-google-books
+GEMINI_API_KEY=sua-chave-do-gemini
 ```
 
 Você pode gerar uma nova chave secreta executando no terminal:
