@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Início | Leitura+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow rounded-4 p-4">
+            <h2 class="text-center mb-4">Entrar no Leitura+</h2>
+            <form method="post" action="{% url 'usuarios:login' %}">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="mb-3">
+                    <label for="username" class="form-label">Usuário</label>
+                    {{ form.username }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Senha</label>
+                    {{ form.password }}
+                </div>
+
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                </div>
+
+                <div class="text-center">
+                    <small>Não tem conta? <a href="{% url 'usuarios:registro' %}">Crie uma agora</a>.</small>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

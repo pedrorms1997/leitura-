@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Recomendação Personalizada | Leitura+{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-center"><img height='80' src="{% static 'site/aleatorio.png' %}" > Recomendação Personalizada</h2>
+
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <form method="POST" class="card shadow-sm mb-4 p-4 border-0">
+      {% csrf_token %}
+      <input type="hidden" name="modo" id="modo-input" value="manual">
+      <div class="mb-3">
+        <label for="texto" class="form-label">Descreva o tipo de livro que deseja:</label>
+        <textarea name="texto" id="texto" class="form-control" rows="3" placeholder="Ex: Quero um livro com mistérios e batalhas medievais...">{{ request.POST.texto }}</textarea>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">🔍 Buscar Recomendação</button>
+        <button type="submit" class="btn btn-outline-secondary" onclick="document.getElementById('modo-input').value='historico'">
+          🎲 Seja surpreendido com base em seu histórico
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% if sugestao %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow-sm">
+      <div class="row g-0">
+        <div class="col-md-4 d-flex align-items-center justify-content-center p-3">
+          {% if sugestao.capa_url %}
+            <img src="{{ sugestao.capa_url }}" alt="Capa do livro {{ sugestao.titulo }}" class="img-fluid rounded">
+          {% else %}
+            <img src="{% static 'site/sem_capa.png' %}" alt="Capa não disponível" class="img-fluid rounded">
+          {% endif %}
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <h4 class="card-title">{{ sugestao.titulo }}</h4>
+            <p class="card-text mb-1"><strong>Autor:</strong> {{ sugestao.autor }}</p>
+            <p class="card-text mb-1"><strong>Editora:</strong> {{ sugestao.editora }}</p>
+            <p class="card-text mb-1"><strong>Ano:</strong> {{ sugestao.ano_publicacao }}</p>
+            <p class="card-text mb-1"><strong>Idioma:</strong> {{ sugestao.idioma }}</p>
+            <p class="card-text mb-1"><strong>Gêneros:</strong> {{ sugestao.genero|join:", " }}</p>
+            <p class="card-text mb-1"><strong>ISBN:</strong> {{ sugestao.isbn }}</p>
+            <p class="card-text mb-1"><strong>Páginas:</strong> {{ sugestao.paginas }}</p>
+            <p class="card-text mt-3"><strong>Sinopse:</strong></p>
+            <p class="text-muted fst-italic">{{ sugestao.sinopse }}</p>
+
+            <form method="POST" action="{% url 'recomendacoes:salvar_livro' %}">
+              {% csrf_token %}
+              {% for key, value in sugestao.items %}
+                {% if value %}
+                  <input type="hidden" name="{{ key }}" value="{{ value }}">
+                {% endif %}
+              {% endfor %}
+              <button type="submit" class="btn btn-primary mt-2">➕ Adicionar à Estante</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

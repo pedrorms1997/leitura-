@@ -1,0 +1,20 @@
+# Ignorar arquivos de testes
+*test*
+
+# Ignorar variáveis de ambiente
+*.env
+
+# Ignorar banco de dados local
+*db.*
+*db.sqlite3*
+
+# Ignorar virtualenv
+venv/
+
+# Ignorar arquivos compilados do Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignorar arquivos estáticos coletados
+staticfiles/

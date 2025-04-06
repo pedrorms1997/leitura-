@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Perfil | Leitura+{% endblock %}
+
+{% block content %}
+<style>
+    .profile-upload-label {
+        cursor: pointer;
+        display: inline-block;
+        margin-top: 10px;
+        font-weight: 500;
+        color: #3498DB;
+        text-decoration: underline;
+    }
+
+    .profile-preview {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid #ccc;
+    }
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow rounded-4 p-4">
+            <div class="text-center mb-4">
+                <img id="preview-foto" src="{% if user.foto_perfil %}{{ user.foto_perfil.url }}{% else %}{% static 'perfil/default_avatar.png' %}{% endif %}" 
+                     alt="Foto de perfil" class="profile-preview">
+
+                <h3 class="mt-3">{{ user.username }}</h3>
+                <p class="text-muted mb-1">{{ user.email }}</p>
+                {% if user.bio %}
+                    <p class="fst-italic text-secondary">"{{ user.bio }}"</p>
+                {% endif %}
+            </div>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3 text-center">
+                    <label for="foto_perfil" class="profile-upload-label">
+                        <i class="fas fa-camera me-1"></i> Alterar foto de perfil
+                    </label>
+                    <input type="file" name="foto_perfil" id="foto_perfil" class="d-none" accept="image/*" onchange="previewImagem(event)">
+                </div>
+
+                <div class="mb-3">
+                    <label for="nome" class="form-label">Nome</label>
+                    <input type="text" class="form-control" id="nome" name="nome" value="{{ user.username }}">
+                </div>
+
+                <div class="mb-3">
+                    <label for="bio" class="form-label">Bio</label>
+                    <textarea class="form-control" id="bio" name="bio" rows="3">{{ user.bio }}</textarea>
+                </div>
+
+                <div class="text-end mb-3">
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+
+            <hr>
+
+            <div class="row text-center">
+                <div class="col">
+                    <h5>Nível</h5>
+                    <p class="fw-bold text-primary">{{ user.nivel }}</p>
+                </div>
+                <div class="col">
+                    <h5>XP</h5>
+                    <p class="fw-bold text-success">{{ user.xp }}</p>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button class="btn btn-outline-secondary w-100 mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#configuracoesConta" aria-expanded="false" aria-controls="configuracoesConta">
+                    ⚙️ Opções da Conta
+                </button>
+                <div class="collapse" id="configuracoesConta">
+                    <div class="card card-body border border-danger-subtle">
+                        <form method="post" action="{% url 'usuarios:logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger w-100">Sair da Conta</button>
+                        </form>                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function previewImagem(event) {
+        const output = document.getElementById('preview-foto');
+        output.src = URL.createObjectURL(event.target.files[0]);
+    }
+</script>
+{% endblock %}

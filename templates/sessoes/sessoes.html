@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sessões de Leitura | Leitura+{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-center"><img height='60' src="{% static 'site/cronometro.png' %}" > Sessões de Leitura</h2>
+
+<div class="list-group">
+  {% for livro in livros %}
+  <div class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 py-3">
+    <div class="d-flex align-items-center gap-3 flex-grow-1">
+      <img src="{{ livro.capa_url }}" alt="Capa de {{ livro.titulo }}" class="rounded" style="height: 80px; width: auto;">
+      <div>
+        <h5 class="mb-1">{{ livro.titulo }}</h5>
+        <div class="d-flex align-items-center gap-2">
+          <label class="mb-0">Página atual:</label>
+          <input type="number" class="form-control form-control-sm w-auto pagina-atual" data-livro-id="{{ livro.id }}" value="{{ livro.pagina_atual|default:1 }}">
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-column flex-md-row gap-3 align-items-center">
+      <div class="text-danger text-center">
+        <i class="fas fa-stopwatch fa-lg"></i><br>
+        <span class="cronometro-tempo small">--:--:--.000</span>
+      </div>
+      <div class="d-flex flex-column flex-md-row gap-2">
+        <button class="btn btn-success btn-iniciar" data-livro-id="{{ livro.id }}">Iniciar</button>
+        <button class="btn btn-danger btn-parar" data-livro-id="{{ livro.id }}" disabled>Parar</button>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Modal para página final -->
+<div class="modal fade" id="modalPaginaFinal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Finalizar Leitura</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <label for="paginaFinalInput">Informe a página final:</label>
+        <input type="number" class="form-control" id="paginaFinalInput">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="confirmarParada">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const botoesIniciar = document.querySelectorAll('.btn-iniciar');
+  const botoesParar = document.querySelectorAll('.btn-parar');
+  const inputsPagina = document.querySelectorAll('.pagina-atual');
+  let sessaoAtiva = {};
+  let livroAtivo = null;
+  let intervalos = {};
+  let temposIniciais = {};
+  let cronometrosParados = {};
+
+  inputsPagina.forEach(input => {
+    input.addEventListener('change', async () => {
+      const livroId = input.dataset.livroId;
+      const novaPagina = input.value;
+
+      await fetch('/sessoes/atualizar-pagina/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: `livro_id=${livroId}&pagina_atual=${novaPagina}`
+      });
+    });
+  });
+
+  botoesIniciar.forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const livroId = btn.dataset.livroId;
+      const input = document.querySelector(`.pagina-atual[data-livro-id='${livroId}']`);
+      const paginaInicial = input.value;
+
+      const response = await fetch('/sessoes/iniciar/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: `livro_id=${livroId}&pagina_inicial=${paginaInicial}`
+      });
+
+      const data = await response.json();
+      sessaoAtiva[livroId] = data.sessao_id;
+
+      btn.disabled = true;
+      const pararBtn = document.querySelector(`.btn-parar[data-livro-id='${livroId}']`);
+      pararBtn.disabled = false;
+
+      const spanTempo = btn.closest('.list-group-item').querySelector('.cronometro-tempo');
+      temposIniciais[livroId] = performance.now();
+      intervalos[livroId] = setInterval(() => {
+        const agora = performance.now();
+        const diff = agora - temposIniciais[livroId];
+        const ms = String(Math.floor(diff % 1000)).padStart(3, '0');
+        const totalSeg = Math.floor(diff / 1000);
+        const h = String(Math.floor(totalSeg / 3600)).padStart(2, '0');
+        const m = String(Math.floor((totalSeg % 3600) / 60)).padStart(2, '0');
+        const s = String(totalSeg % 60).padStart(2, '0');
+        spanTempo.textContent = `${h}:${m}:${s}.${ms}`;
+      }, 50);
+    });
+  });
+
+  botoesParar.forEach(btn => {
+    btn.addEventListener('click', () => {
+      livroAtivo = btn.dataset.livroId;
+
+      // Para o cronômetro imediatamente ao clicar em parar
+      clearInterval(intervalos[livroAtivo]);
+
+      const spanTempo = document.querySelector(`.btn-iniciar[data-livro-id='${livroAtivo}']`).closest('.list-group-item').querySelector('.cronometro-tempo');
+      cronometrosParados[livroAtivo] = spanTempo.textContent;
+
+      const iniciarBtn = document.querySelector(`.btn-iniciar[data-livro-id='${livroAtivo}']`);
+      const pararBtn = document.querySelector(`.btn-parar[data-livro-id='${livroAtivo}']`);
+      iniciarBtn.disabled = false;
+      pararBtn.disabled = true;
+
+      new bootstrap.Modal(document.getElementById('modalPaginaFinal')).show();
+    });
+  });
+
+  document.getElementById('confirmarParada').addEventListener('click', async () => {
+    const sessaoId = sessaoAtiva[livroAtivo];
+    const paginaFinal = document.getElementById('paginaFinalInput').value;
+
+    await fetch('/sessoes/parar/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: `sessao_id=${sessaoId}&pagina_final=${paginaFinal}`
+    });
+
+    const inputAtual = document.querySelector(`.pagina-atual[data-livro-id='${livroAtivo}']`);
+    if (inputAtual) {
+      inputAtual.value = paginaFinal;
+    }
+
+    const spanTempo = inputAtual.closest('.list-group-item').querySelector('.cronometro-tempo');
+    spanTempo.textContent = '--:--:--.000';
+
+    bootstrap.Modal.getInstance(document.getElementById('modalPaginaFinal')).hide();
+  });
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+</script>
+{% endblock %}

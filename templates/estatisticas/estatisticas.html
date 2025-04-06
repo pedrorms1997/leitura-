@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Estatísticas | Leitura+{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-center"><img height='60' src="{% static 'site/grafico.png' %}" > Estatísticas de Leitura</h2>
+
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title"><img height='25' src="{% static 'site/cronometro.png' %}" > Tempo Total de Leitura</h5>
+        <p class="fs-4">{{ tempo_total }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title"><img height='25' src="{% static 'site/folha.png' %}" > Páginas Totais Lidas</h5>
+        <p class="fs-4">{{ total_paginas_lidas }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title"><img height='25' src="{% static 'site/livro_aberto.png' %}" > Livros Concluídos</h5>
+        <p class="fs-4">{{ livros_concluidos }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title"><img height='25' src="{% static 'site/pilha_livros.png' %}" > Total de Livros</h5>
+        <p class="fs-4">{{ total_livros }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="my-5">
+
+<h4 class="mb-4"><img height='25' src="{% static 'site/livro_aberto.png' %}" > Progresso de Leitura por Livro</h4>
+<div class="row g-4">
+  {% for livro in livros_info %}
+  <div class="col-md-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex align-items-start gap-3">
+          <img src="{{ livro.capa_url }}" alt="Capa de {{ livro.titulo }}" class="rounded" style="height: 100px; width: auto;">
+          <div>
+            <h5 class="mb-1">{{ livro.titulo }}</h5>
+            <small class="text-muted d-block mb-2">{{ livro.autor }}</small>
+            <div class="progress mb-2" style="height: 15px;">
+              <div class="progress-bar bg-success" role="progressbar" style="width: {{ livro.percentual }}%;" aria-valuenow="{{ livro.percentual }}" aria-valuemin="0" aria-valuemax="100">
+                {{ livro.percentual|floatformat:0 }}%
+              </div>
+            </div>
+            <small class="text-muted">{{ livro.paginas_lidas }} de {{ livro.total_paginas }} páginas lidas</small><br>
+            <small class="text-muted">Tempo total: {{ livro.tempo_total }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

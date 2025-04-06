@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Início | Leitura+{% endblock %}
+
+{% block content %}
+<section class="text-center py-5 hero-home">
+  <div class="container">
+    <h1 class="display-4 fw-bold mb-3"><img height='80' src="{% static 'site/livro.png' %}" > Bem-vindo ao <span class="text-primary">Leitura+</span></h1>
+    <p class="lead mb-4">Sua jornada de leitura, com estatísticas, recomendações e controle total!</p>
+    <a href="{% url 'estante:estante' %}" class="btn btn-primary btn-lg">Comece agora</a>
+  </div>
+</section>
+
+<section class="py-5 text-center recursos-home">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-3">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body">
+            <h5 class="card-title"><img height='30' src="{% static 'site/pilha_livros.png' %}" >Favoritos</h5>
+            <p class="card-text text-muted">Cadastre seus livros favoritos e organize sua estante pessoal.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body">
+            <h5 class="card-title"><img height='30' src="{% static 'site/lampada.png' %}" > Recomendações</h5>
+            <p class="card-text text-muted">Receba sugestões com base nos livros que você ama.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body">
+            <h5 class="card-title"><img height='30' src="{% static 'site/grafico.png' %}" > Estatísticas</h5>
+            <p class="card-text text-muted">Acompanhe seu progresso e veja sua evolução como leitor(a).</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body">
+            <h5 class="card-title"><img height='30' src="{% static 'site/cronometro.png' %}" > Cronômetro</h5>
+            <p class="card-text text-muted">Registre seu tempo de leitura com um cronômetro integrado.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 text-center sobre-home">
+  <div class="container">
+    <h2 class="mb-4">Por que usar o <span class="text-primary">Leitura+</span>?</h2>
+    <p class="lead text-muted mb-4">
+      Porque ler é mais do que terminar livros — é evoluir, se inspirar e entender seus próprios hábitos de leitura.
+    </p>
+    <p class="text-muted">Com o Leitura+, você transforma leitura em jornada. Pronto para começar?</p>
+    <a href="{% url 'estante:estante' %}" class="btn btn-outline-primary mt-3">Ir para minha estante</a>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,23 @@
+{# estante/templates/estante/faixa_estante.html #}
+{% if livros %}
+<div class="faixa-estante-wrapper py-4">
+    <div class="faixa-estante-inner px-4">
+        <h3 class="mb-3">Livros na sua estante:</h3>
+        <div class="d-flex overflow-auto gap-3 pb-3" style="scroll-snap-type: x mandatory;">
+            {% for livro in livros %}
+                <div class="card card-livro text-center shadow-sm">
+                    <img src="{{ livro.capa_url }}" class="card-img-top capa-livro" alt="{{ livro.titulo }}">
+                    <div class="card-body p-2 d-flex flex-column justify-content-between">
+                        <h6 class="card-title mb-1 text-truncate" title="{{ livro.titulo }}">{{ livro.titulo }}</h6>
+                        <small class="text-muted d-block text-truncate" title="{{ livro.autor }}">{{ livro.autor }}</small>
+                        <form method="POST" action="{% url 'estante:excluir' livro.id %}">
+                            {% csrf_token %}
+                            <button class="btn btn-sm btn-outline-danger mt-2">🗑️</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
