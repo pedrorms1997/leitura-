@@ -16,5 +16,8 @@ __pycache__/
 *.pyc
 *.pyo
 
+*.zip
+*.md
+
 # Ignorar arquivos estáticos coletados
 staticfiles/
