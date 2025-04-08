@@ -112,7 +112,7 @@ Acesse em `http://127.0.0.1:8000/`.
 [GitHub](https://github.com/pedrorms1997) • [LinkedIn](https://www.linkedin.com/in/pedro-rodrigues-m-b69704101/)
 
 - **João Guilherme**
-[GitHub]() • [LinkedIn]()
+[GitHub](https://github.com/guirxin) • [LinkedIn]()
 
 - **Samuel Oliveira**
 [GitHub]() • [LinkedIn]()
