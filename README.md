@@ -118,7 +118,7 @@ Acesse em `http://127.0.0.1:8000/`.
 [GitHub]() • [LinkedIn]()
 
 - **Lucas Rocha**
-[GitHub]() • [LinkedIn]()
+[GitHub](https://github.com/rodxzy) • [LinkedIn]()
   
 - **Janaina**
 [GitHub]() • [LinkedIn]()
