@@ -109,4 +109,16 @@ Acesse em `http://127.0.0.1:8000/`.
 
 ## 👨‍💻 Desenvolvedores
 - **Pedro Moraes**  
-  [GitHub](https://github.com/pedrorms1997) • [LinkedIn](https://www.linkedin.com/in/pedro-rodrigues-m-b69704101/)
+[GitHub](https://github.com/pedrorms1997) • [LinkedIn](https://www.linkedin.com/in/pedro-rodrigues-m-b69704101/)
+
+- **João Guilherme**
+[GitHub]() • [LinkedIn]()
+
+- **Samuel Oliveira**
+[GitHub]() • [LinkedIn]()
+
+- **Lucas Rocha**
+[GitHub]() • [LinkedIn]()
+  
+- **Janaina**
+[GitHub]() • [LinkedIn]()
